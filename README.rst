@@ -3,6 +3,9 @@ emapred
 
 Erlang distributed Map-Reduce framework.
 
+.. image:: https://travis-ci.org/linkdd/emapred.svg?branch=master
+    :target: https://travis-ci.org/linkdd/emapred
+
 Features
 --------
 
