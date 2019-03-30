@@ -25,7 +25,7 @@ start_link() ->
 
 %%--------------------------------------------------------------------
 add(M, F, A) ->
-    Node = emapred_lb:get_best_node(),
+    Node = emapred_wb:get_best_node(),
     supervisor:start_child({?SERVER, Node}, [M, F, A]).
 
 %%--------------------------------------------------------------------
