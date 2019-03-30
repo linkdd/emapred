@@ -9,7 +9,8 @@
 %% API
 -export([
     start_link/1,
-    map/3
+    map/3,
+    stop/1
 ]).
 
 %% gen_server
@@ -31,8 +32,12 @@ start_link(MapFun) ->
     gen_server:start_link(?MODULE, MapFun, []).
 
 %%--------------------------------------------------------------------
-map(Mapper, Chunk, Reducer) ->
-    gen_server:call(Mapper, {map, Chunk, Reducer}).
+map(Mapper, Element, Reducer) ->
+    gen_server:call(Mapper, {map, Element, Reducer}).
+
+%%--------------------------------------------------------------------
+stop(Mapper) ->
+    gen_server:call(Mapper, stop).
 
 %%====================================================================
 %% Generic Server
@@ -50,27 +55,20 @@ terminate(_Reason, _State) ->
     ok.
 
 %%--------------------------------------------------------------------
-handle_call({map, Chunk, Reducer}, _From, State) ->
-    ok = map_chunk(State#state.func, Reducer, Chunk),
+handle_call({map, Element, Reducer}, _From, State) ->
+    #state{func = MapFun} = State,
+    ok = case MapFun(Element) of
+        {emit, {Key, Value}} -> emapred_reducer:emit(Reducer, Key, Value);
+        ok                   -> ok
+    end,
+    {reply, ok, State};
+
+handle_call(stop, _From, State) ->
     {stop, normal, ok, State};
 
 handle_call(Request, _From, State) ->
     {reply, {error, {invalid, Request}}, State}.
 
 %%--------------------------------------------------------------------
-handle_cast(Msg, State) ->
+handle_cast(_Msg, State) ->
     {noreply, State}.
-
-%%====================================================================
-%% Internal functions
-%%====================================================================
-
-map_chunk(MapFun, Reducer, [Element | Elements]) ->
-    ok = case MapFun(Element) of
-        {emit, {Key, Value}} -> emapred_reducer:emit(Reducer, Key, Value);
-        ok                   -> ok
-    end,
-    map_chunk(MapFun, Reducer, []);
-
-map_chunk(_MapFun, _Reducer, []) ->
-    ok.
