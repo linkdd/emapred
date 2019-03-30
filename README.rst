@@ -44,4 +44,6 @@ Example
 Build
 -----
 
-    $ rebar3 compile
+.. code-block:: console
+
+   $ rebar3 compile
