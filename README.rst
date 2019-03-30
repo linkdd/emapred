@@ -32,14 +32,14 @@ Example
        % Initial value for reducer accumulator
        0
    ),
-    % Stream elements to map
-    ok = emapred_pipeline:send(P, 5),
-    ok = emapred_pipeline:send(P, 6),
-    ok = emapred_pipeline:send(P, 3),
-    ok = emapred_pipeline:send(P, 4),
-    ok = emapred_pipeline:send(P, 7),
-    % Stop streaming and get reduced result
-    -1 = emapred_pipeline:stop(P).
+   % Stream elements to map
+   ok = emapred_pipeline:send(P, 5),
+   ok = emapred_pipeline:send(P, 6),
+   ok = emapred_pipeline:send(P, 3),
+   ok = emapred_pipeline:send(P, 4),
+   ok = emapred_pipeline:send(P, 7),
+   % Stop streaming and get reduced result
+   -1 = emapred_pipeline:stop(P).
 
 Build
 -----
